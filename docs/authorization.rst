@@ -94,8 +94,11 @@ Return Values: The List Case
 In the case of the ``*_list`` methods, you'll want to filter the ``object_list``
 & return only the objects the user has access to.
 
-If they have no access to any of the objects, returning an empty list will
-cause an ``Unauthorized`` status code in the response.
+Returning an empty list simply won't allow the action to be applied to any
+objects. However, they will not get a HTTP error status code.
+
+If you'd rather they received an unauthorized status code, raising
+``Unauthorized`` will return a HTTP ``401``.
 
 Return Values: The Detail Case
 ------------------------------
@@ -103,9 +106,11 @@ Return Values: The Detail Case
 In the case of the ``*_detail`` methods, you'll have access to the
 ``object_list`` (so you know if a given object fits within the overall set),
 **BUT** you'll want to be inspecting ``bundle.obj`` & either returning
-``True`` if they should be allowed to continue or ``False`` if not.
+``True`` if they should be allowed to continue or raising the
+``Unauthorized`` exception if not.
 
-Returning ``False`` will cause an ``Unauthorized`` status code in the response.
+Raising ``Unauthorized`` will cause a HTTP ``401`` error status code in the
+response.
 
 
 Implementing Your Own Authorization
@@ -119,6 +124,7 @@ An example implementation of a user only being able to "their" objects might
 look like::
 
     from tastypie.authorization import Authorization
+    from tastypie.exceptions import Unauthorized
 
 
     class UserObjectsOnlyAuthorization(Authorization):
@@ -152,7 +158,7 @@ look like::
 
         def delete_list(self, object_list, bundle):
             # Sorry user, no deletes for you!
-            return []
+            raise Unauthorized("Sorry, no deletes.")
 
         def delete_detail(self, object_list, bundle):
-            return False
+            raise Unauthorized("Sorry, no deletes.")

@@ -584,9 +584,6 @@ class Resource(object):
         """
         try:
             auth_result = self._meta.authorization.read_list(object_list, bundle)
-
-            if not auth_result:
-                raise Unauthorized("You are not allowed to access that resource.")
         except Unauthorized, e:
             self.unauthorized_result(e)
 
@@ -599,9 +596,6 @@ class Resource(object):
         """
         try:
             auth_result = self._meta.authorization.read_detail(object_list, bundle)
-
-            if not auth_result:
-                raise Unauthorized("You are not allowed to access that resource.")
         except Unauthorized, e:
             self.unauthorized_result(e)
 
@@ -614,9 +608,6 @@ class Resource(object):
         """
         try:
             auth_result = self._meta.authorization.create_list(object_list, bundle)
-
-            if not auth_result:
-                raise Unauthorized("You are not allowed to access that resource.")
         except Unauthorized, e:
             self.unauthorized_result(e)
 
@@ -629,9 +620,6 @@ class Resource(object):
         """
         try:
             auth_result = self._meta.authorization.create_detail(object_list, bundle)
-
-            if not auth_result:
-                raise Unauthorized("You are not allowed to access that resource.")
         except Unauthorized, e:
             self.unauthorized_result(e)
 
@@ -644,9 +632,6 @@ class Resource(object):
         """
         try:
             auth_result = self._meta.authorization.update_list(object_list, bundle)
-
-            if not auth_result:
-                raise Unauthorized("You are not allowed to access that resource.")
         except Unauthorized, e:
             self.unauthorized_result(e)
 
@@ -659,9 +644,6 @@ class Resource(object):
         """
         try:
             auth_result = self._meta.authorization.update_detail(object_list, bundle)
-
-            if not auth_result:
-                raise Unauthorized("You are not allowed to access that resource.")
         except Unauthorized, e:
             self.unauthorized_result(e)
 
@@ -674,9 +656,6 @@ class Resource(object):
         """
         try:
             auth_result = self._meta.authorization.delete_list(object_list, bundle)
-
-            if not auth_result:
-                raise Unauthorized("You are not allowed to access that resource.")
         except Unauthorized, e:
             self.unauthorized_result(e)
 
@@ -689,9 +668,6 @@ class Resource(object):
         """
         try:
             auth_result = self._meta.authorization.delete_detail(object_list, bundle)
-
-            if not auth_result:
-                raise Unauthorized("You are not allowed to access that resource.")
         except Unauthorized, e:
             self.unauthorized_result(e)
 

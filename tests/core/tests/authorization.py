@@ -3,6 +3,7 @@ from django.http import HttpRequest
 from django.contrib.auth.models import User, Permission
 from core.models import Note
 from tastypie.authorization import Authorization, ReadOnlyAuthorization, DjangoAuthorization
+from tastypie.exceptions import Unauthorized
 from tastypie import fields
 from tastypie.resources import Resource, ModelResource
 
@@ -78,15 +79,15 @@ class AuthorizationTestCase(TestCase):
 
         bundle.request.method = 'POST'
         self.assertEqual(len(auth.create_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.create_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.create_detail, resource.get_object_list(bundle.request)[0], bundle)
 
         bundle.request.method = 'PUT'
         self.assertEqual(len(auth.update_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.update_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.update_detail, resource.get_object_list(bundle.request)[0], bundle)
 
         bundle.request.method = 'DELETE'
         self.assertEqual(len(auth.delete_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.delete_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.delete_detail, resource.get_object_list(bundle.request)[0], bundle)
 
 
 class DjangoAuthorizationTestCase(TestCase):
@@ -117,15 +118,15 @@ class DjangoAuthorizationTestCase(TestCase):
 
         bundle.request.method = 'POST'
         self.assertEqual(len(auth.create_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.create_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.create_detail, resource.get_object_list(bundle.request)[0], bundle)
 
         bundle.request.method = 'PUT'
         self.assertEqual(len(auth.update_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.update_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.update_detail, resource.get_object_list(bundle.request)[0], bundle)
 
         bundle.request.method = 'DELETE'
         self.assertEqual(len(auth.delete_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.delete_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.delete_detail, resource.get_object_list(bundle.request)[0], bundle)
 
     def test_add_perm(self):
         request = HttpRequest()
@@ -150,11 +151,11 @@ class DjangoAuthorizationTestCase(TestCase):
 
         bundle.request.method = 'PUT'
         self.assertEqual(len(auth.update_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.update_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.update_detail, resource.get_object_list(bundle.request)[0], bundle)
 
         bundle.request.method = 'DELETE'
         self.assertEqual(len(auth.delete_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.delete_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.delete_detail, resource.get_object_list(bundle.request)[0], bundle)
 
     def test_change_perm(self):
         request = HttpRequest()
@@ -173,7 +174,7 @@ class DjangoAuthorizationTestCase(TestCase):
 
         bundle.request.method = 'POST'
         self.assertEqual(len(auth.create_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.create_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.create_detail, resource.get_object_list(bundle.request)[0], bundle)
 
         bundle.request.method = 'PUT'
         self.assertEqual(len(auth.update_list(resource.get_object_list(bundle.request), bundle)), 4)
@@ -181,7 +182,7 @@ class DjangoAuthorizationTestCase(TestCase):
 
         bundle.request.method = 'DELETE'
         self.assertEqual(len(auth.delete_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.delete_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.delete_detail, resource.get_object_list(bundle.request)[0], bundle)
 
     def test_delete_perm(self):
         request = HttpRequest()
@@ -200,11 +201,11 @@ class DjangoAuthorizationTestCase(TestCase):
 
         bundle.request.method = 'POST'
         self.assertEqual(len(auth.create_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.create_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.create_detail, resource.get_object_list(bundle.request)[0], bundle)
 
         bundle.request.method = 'PUT'
         self.assertEqual(len(auth.update_list(resource.get_object_list(bundle.request), bundle)), 0)
-        self.assertFalse(auth.update_detail(resource.get_object_list(bundle.request)[0], bundle))
+        self.assertRaises(Unauthorized, auth.update_detail, resource.get_object_list(bundle.request)[0], bundle)
 
         bundle.request.method = 'DELETE'
         self.assertEqual(len(auth.delete_list(resource.get_object_list(bundle.request), bundle)), 4)

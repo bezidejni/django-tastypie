@@ -994,6 +994,7 @@ class TestOptionsResource(ModelResource):
         queryset = Note.objects.all()
         allowed_methods = ['post']
         list_allowed_methods = ['post', 'put']
+        authorization = Authorization()
 
 
 # Per user authorization bits.

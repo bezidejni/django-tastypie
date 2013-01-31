@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
+from tastypie.exceptions import Unauthorized
 from tastypie import fields
 from tastypie.resources import ModelResource
 from ..models import AuthorProfile, Article
@@ -29,15 +30,15 @@ class PerUserAuthorization(Authorization):
             if bundle.request.user.pk == profile.user.pk:
                 return True
 
-        return False
+        raise Unauthorized("Nope.")
 
     def delete_list(self, object_list, bundle):
         # Disallow deletes completely.
-        return []
+        raise Unauthorized("Nope.")
 
     def delete_detail(self, object_list, bundle):
         # Disallow deletes completely.
-        return False
+        raise Unauthorized("Nope.")
 
 
 class UserResource(ModelResource):
