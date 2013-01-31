@@ -1133,6 +1133,17 @@ class Resource(object):
         """
         raise NotImplementedError()
 
+    def obj_delete_list_for_update(self, bundle, **kwargs):
+        """
+        Deletes an entire list of objects, specific to PUT list.
+
+        This needs to be implemented at the user level.
+
+        ``ModelResource`` includes a full working version specific to Django's
+        ``Models``.
+        """
+        raise NotImplementedError()
+
     def obj_delete(self, bundle, **kwargs):
         """
         Deletes a single object.
@@ -1304,7 +1315,7 @@ class Resource(object):
             raise BadRequest("Invalid data sent.")
 
         basic_bundle = self.build_bundle(request=request)
-        self.obj_delete_list(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
+        self.obj_delete_list_for_update(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
         bundles_seen = []
 
         for object_data in deserialized['objects']:
@@ -2086,6 +2097,20 @@ class ModelResource(Resource):
         """
         objects_to_delete = self.obj_get_list(bundle=bundle, **kwargs)
         deletable_objects = self.authorized_delete_list(objects_to_delete, bundle)
+
+        if hasattr(deletable_objects, 'delete'):
+            # It's likely a ``QuerySet``. Call ``.delete()`` for efficiency.
+            deletable_objects.delete()
+        else:
+            for authed_obj in deletable_objects:
+                authed_obj.delete()
+
+    def obj_delete_list_for_update(self, bundle, **kwargs):
+        """
+        A ORM-specific implementation of ``obj_delete_list_for_update``.
+        """
+        objects_to_delete = self.obj_get_list(bundle=bundle, **kwargs)
+        deletable_objects = self.authorized_update_list(objects_to_delete, bundle)
 
         if hasattr(deletable_objects, 'delete'):
             # It's likely a ``QuerySet``. Call ``.delete()`` for efficiency.

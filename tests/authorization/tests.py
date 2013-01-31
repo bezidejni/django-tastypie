@@ -146,18 +146,22 @@ class PerUserAuthorizationTestCase(ResourceTestCase):
 
         # Editor can edit whatever, since they're on all the articles.
         self.assertEqual(Article.objects.count(), 3)
-        self.assertHttpAccepted(self.api_client.put('/api/v1/article/', format='json', data=the_data, authentication=self.author_auth_2))
+        self.assertHttpAccepted(self.api_client.put('/api/v1/article/', format='json', data=the_data, authentication=self.author_auth_3))
         # Verify no change in count.
         self.assertEqual(Article.objects.count(), 3)
-        self.assertEqual(Article.objects.get(pk=self.article_1.pk).title, 'Revised Story')
-        self.assertEqual(Article.objects.get(pk=self.article_1.pk).content, "We didn't like the previous version.")
-        self.assertEqual(Article.objects.get(pk=self.article_3.pk).title, 'Revised Story')
-        self.assertEqual(Article.objects.get(pk=self.article_3.pk).content, "We didn't like the previous version.")
+        self.assertEqual(Article.objects.get(pk=self.article_1.pk).title, 'This is edited.')
+        self.assertEqual(Article.objects.get(pk=self.article_1.pk).content, 'Some big tech company announced new stuffs! Go get your consumerism on!')
+        self.assertEqual(Article.objects.get(pk=self.article_3.pk).title, 'Updated: Ugh, Who Cares About New Stuff?')
+        self.assertEqual(Article.objects.get(pk=self.article_3.pk).content, 'Obviously stuff by other by other company is way better.')
 
         # But a regular author can't update the whole list.
+        the_data['objects'][2]['title'] = "Your Story Is Bad And You Should Feel Bad"
+        del the_data['objects'][0]
         self.assertHttpUnauthorized(self.api_client.put('/api/v1/article/', format='json', data=the_data, authentication=self.author_auth_1))
-        # Verify no change in count.
-        self.assertEqual(Article.objects.count(), 3)
+        # Verify count goes down.
+        self.assertEqual(Article.objects.count(), 2)
+        # Verify he couldn't edit that title.
+        self.assertEqual(Article.objects.get(pk=self.article_3.pk).title, 'Updated: Ugh, Who Cares About New Stuff?')
 
     def test_put_detail(self):
         # Should be able to update our story.

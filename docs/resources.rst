@@ -1298,6 +1298,18 @@ Deletes an entire list of objects.
 ``ModelResource`` includes a full working version specific to Django's
 ``Models``.
 
+``obj_delete_list_for_update``
+------------------------------
+
+.. method:: Resource.obj_delete_list_for_update(self, bundle, **kwargs)
+
+Deletes an entire list of objects, specific to PUT list.
+
+*This needs to be implemented at the user level.*
+
+``ModelResource`` includes a full working version specific to Django's
+``Models``.
+
 ``obj_delete``
 --------------
 
@@ -1702,6 +1714,15 @@ A ORM-specific implementation of ``obj_update``.
 .. method:: ModelResource.obj_delete_list(self, **kwargs)
 
 A ORM-specific implementation of ``obj_delete_list``.
+
+Takes optional ``kwargs``, which can be used to narrow the query.
+
+``obj_delete_list_for_update``
+------------------------------
+
+.. method:: ModelResource.obj_delete_list_for_update(self, **kwargs)
+
+A ORM-specific implementation of ``obj_delete_list_for_update``.
 
 Takes optional ``kwargs``, which can be used to narrow the query.
 
