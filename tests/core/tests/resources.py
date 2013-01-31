@@ -47,6 +47,7 @@ class BasicResource(Resource):
     class Meta:
         object_class = TestObject
         resource_name = 'basic'
+        authorization = Authorization()
 
     def dehydrate_date_joined(self, bundle):
         if getattr(bundle.obj, 'date_joined', None) is not None:
@@ -74,6 +75,7 @@ class AnotherBasicResource(BasicResource):
     class Meta:
         object_class = TestObject
         resource_name = 'anotherbasic'
+        authorization = Authorization()
 
     def dehydrate(self, bundle):
         if hasattr(bundle.obj, 'bar'):
@@ -99,6 +101,7 @@ class NoUriBasicResource(BasicResource):
     class Meta:
         object_class = TestObject
         include_resource_uri = False
+        authorization = Authorization()
 
 
 class NullableNameResource(Resource):
@@ -107,12 +110,14 @@ class NullableNameResource(Resource):
     class Meta:
         object_class = TestObject
         resource_name = 'nullable_name'
+        authorization = Authorization()
 
 
 class MangledBasicResource(BasicResource):
     class Meta:
         object_class = TestObject
         resource_name = 'mangledbasic'
+        authorization = Authorization()
 
     def alter_list_data_to_serialize(self, request, data_dict):
         if isinstance(data_dict, dict):
@@ -677,6 +682,7 @@ class DateRecordResource(ModelResource):
     class Meta:
         queryset = DateRecord.objects.all()
         always_return_data = True
+        authorization = Authorization()
 
     def hydrate(self, bundle):
         bundle.data['message'] = bundle.data['message'].lower()
@@ -709,6 +715,7 @@ class NoteResource(ModelResource):
 class LightlyCustomNoteResource(NoteResource):
     class Meta:
         resource_name = 'noteish'
+        authorization = Authorization()
         allowed_methods = ['get']
         queryset = Note.objects.filter(is_active=True)
 
@@ -717,6 +724,7 @@ class TinyLimitNoteResource(NoteResource):
     class Meta:
         limit = 3
         resource_name = 'littlenote'
+        authorization = Authorization()
         allowed_methods = ['get']
         queryset = Note.objects.filter(is_active=True)
 
@@ -726,6 +734,7 @@ class AlwaysDataNoteResource(NoteResource):
         resource_name = 'alwaysdatanote'
         queryset = Note.objects.filter(is_active=True)
         always_return_data = True
+        authorization = Authorization()
 
 
 class VeryCustomNoteResource(NoteResource):
@@ -747,6 +756,7 @@ class AutoNowNoteResource(ModelResource):
     class Meta:
         resource_name = 'autonownotes'
         queryset = AutoNowNote.objects.filter(is_active=True)
+        authorization = Authorization()
 
     def get_resource_uri(self, bundle_or_obj=None, url_name='api_dispatch_list'):
         if bundle_or_obj is None:
@@ -768,6 +778,7 @@ class CustomPageNoteResource(NoteResource):
         resource_name = 'pagey'
         paginator_class = CustomPaginator
         queryset = Note.objects.all()
+        authorization = Authorization()
 
 
 class AlwaysUserNoteResource(NoteResource):
@@ -783,6 +794,7 @@ class AlwaysUserNoteResource(NoteResource):
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
+        authorization = Authorization()
 
     def get_resource_uri(self, bundle_or_obj=None, url_name='api_dispatch_list'):
         if bundle_or_obj is None:
@@ -806,6 +818,7 @@ class DetailedNoteResource(ModelResource):
         }
         ordering = ['title', 'slug', 'user']
         queryset = Note.objects.filter(is_active=True)
+        authorization = Authorization()
 
     def get_resource_uri(self, bundle_or_obj=None, url_name='api_dispatch_list'):
         if bundle_or_obj is None:
@@ -824,6 +837,7 @@ class RequiredFKNoteResource(ModelResource):
     class Meta:
         resource_name = 'requiredfknotes'
         queryset = NoteWithEditor.objects.all()
+        authorization = Authorization()
 
 
 class ThrottledNoteResource(NoteResource):
@@ -831,6 +845,7 @@ class ThrottledNoteResource(NoteResource):
         resource_name = 'throttlednotes'
         queryset = Note.objects.filter(is_active=True)
         throttle = CacheThrottle(throttle_at=2, timeframe=5, expiration=5)
+        authorization = Authorization()
 
 
 class BasicAuthNoteResource(NoteResource):
@@ -838,12 +853,14 @@ class BasicAuthNoteResource(NoteResource):
         resource_name = 'notes'
         queryset = Note.objects.filter(is_active=True)
         authentication = BasicAuthentication()
+        authorization = Authorization()
 
 
 class NoUriNoteResource(ModelResource):
     class Meta:
         queryset = Note.objects.filter(is_active=True)
         include_resource_uri = False
+        authorization = Authorization()
 
 
 class WithAbsoluteURLNoteResource(ModelResource):
@@ -851,6 +868,7 @@ class WithAbsoluteURLNoteResource(ModelResource):
         queryset = Note.objects.filter(is_active=True)
         include_absolute_url = True
         resource_name = 'withabsoluteurlnote'
+        authorization = Authorization()
 
     def get_resource_uri(self, bundle_or_obj=None, url_name='api_dispatch_list'):
         if bundle_or_obj is None:
@@ -866,6 +884,7 @@ class SubjectResource(ModelResource):
         filtering = {
             'name': ALL,
         }
+        authorization = Authorization()
 
 
 class RelatedNoteResource(ModelResource):
@@ -880,6 +899,7 @@ class RelatedNoteResource(ModelResource):
             'subjects': ALL_WITH_RELATIONS,
         }
         fields = ['title', 'slug', 'content', 'created', 'is_active']
+        authorization = Authorization()
 
 
 class AnotherSubjectResource(ModelResource):
@@ -892,6 +912,7 @@ class AnotherSubjectResource(ModelResource):
         filtering = {
             'notes': ALL_WITH_RELATIONS,
         }
+        authorization = Authorization()
 
 
 class AnotherRelatedNoteResource(ModelResource):
@@ -906,6 +927,7 @@ class AnotherRelatedNoteResource(ModelResource):
             'subjects': ALL_WITH_RELATIONS,
         }
         fields = ['title', 'slug', 'content', 'created', 'is_active']
+        authorization = Authorization()
 
 
 class YetAnotherRelatedNoteResource(ModelResource):
@@ -920,6 +942,7 @@ class YetAnotherRelatedNoteResource(ModelResource):
             'subjects': ALL_WITH_RELATIONS,
         }
         fields = ['title', 'slug', 'content', 'created', 'is_active']
+        authorization = Authorization()
 
 
 class NullableRelatedNoteResource(AnotherRelatedNoteResource):
@@ -934,6 +957,7 @@ class NullableMediaBitResource(ModelResource):
     class Meta:
         queryset = MediaBit.objects.all()
         resource_name = 'nullablemediabit'
+        authorization = Authorization()
 
 
 class ReadOnlyRelatedNoteResource(ModelResource):
@@ -942,6 +966,7 @@ class ReadOnlyRelatedNoteResource(ModelResource):
 
     class Meta:
         queryset = Note.objects.all()
+        authorization = Authorization()
 
 
 class BlankMediaBitResource(ModelResource):
@@ -951,6 +976,7 @@ class BlankMediaBitResource(ModelResource):
     class Meta:
         queryset = MediaBit.objects.all()
         resource_name = 'blankmediabit'
+        authorization = Authorization()
 
     # We'll custom populate the note here if it's not present.
     # Doesn't make a ton of sense in this context, but for things
@@ -1050,6 +1076,7 @@ class CounterResource(ModelResource):
 
     class Meta:
         queryset = Counter.objects.all()
+        authorization = Authorization()
 
     def full_hydrate(self, bundle):
         bundle.times_hydrated = getattr(bundle, 'times_hydrated', 0) + 1
